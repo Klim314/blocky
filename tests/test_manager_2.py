@@ -46,6 +46,23 @@ def setup_map():
     manager.add_entity(knight3, 2, 0, 0)
     return (manager, (knight1, knight2, knight3))
 
+@pytest.fixture(scope="function")
+def setup_map_walled():
+    target = "data/maps/map3_wall.map"
+    zone = Zone()
+    zone.load_map(map_ann, target)
+    manager = Manager(zone)
+
+    actives = ActiveLoader("data/actives.yaml")
+    # Create Unitfactory
+    uf = TemplateUnitFactory("data/units.yaml", actives)
+    knight1 = uf.create_unit("knight", "knight1", 1, owner="p1")
+    knight2 = uf.create_unit("knight", "knight2", 1, owner="p2")
+    knight3 = uf.create_unit("knight", "knight3", 1, owner="p1")
+    manager.add_entity(knight1, 0, 0, 0)
+    manager.add_entity(knight2, 1, 0, 0)
+    manager.add_entity(knight3, 3, 0, 0)
+    return (manager, (knight1, knight2, knight3))
 
 # Test of basic Attack functionality
 def test_attack_basic(setup_map):
@@ -105,6 +122,28 @@ def test_active_attack_aoe_ff(setup_map):
     print(aoe_attack.properties)
     manager.interact_active(knight2, aoe_attack, (1, 0, 0))
     assert(knight2.hp < k2_prev_hp)
+    assert(knight1.hp < k1_prev_hp)
+
+
+def test_active_attack_aoe_spread(setup_map_walled):
+    manager, knights = setup_map_walled
+    knight1, knight2, knight3 = knights
+    k3_prev_hp = knight3.hp
+    k1_prev_hp = knight1.hp
+    actives = ActiveLoader("data/actives.yaml")
+    aoe_attack = actives["attack_1"]
+    assert(aoe_attack.name == "basic_aoe")
+    # The Normal attack is blocked
+    manager.interact_active(knight2, aoe_attack, (1, 0, 0))
+    assert(knight1.hp < k1_prev_hp)
+    assert(knight3.hp == k3_prev_hp)
+
+    # spread should not be blocked
+    aoe_attack.properties.add("spread")
+    print(aoe_attack.properties)
+    k1_prev_hp = knight1.hp
+    manager.interact_active(knight2, aoe_attack, (1, 0, 0))
+    assert(knight3.hp < k3_prev_hp)
     assert(knight1.hp < k1_prev_hp)
 
 

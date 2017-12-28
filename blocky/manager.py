@@ -6,12 +6,12 @@ from blocky.fieldmap import pathfind
 import logging
 
 
-
 def calc_damage(unit, attack, target):
     return eval(attack.formula.format(uatk=unit.atk,
                                       updef=unit.pdef,
                                       tpdef=target.pdef,
                                       tmdef=target.mdef))
+
 
 class Manager:
     """Manages a game state containing at least one zone
@@ -28,7 +28,7 @@ class Manager:
         # All the various triggers that must be cleaned up
         self.triggers = []
 
-    def _in_range(self, p1, p2, atk_range, filters = {}):
+    def _in_range(self, p1, p2, atk_range, filters={}):
         """Checks if p2 is in range of p1
         args:
             p1: tup (x, y z) indication source position
@@ -43,14 +43,24 @@ class Manager:
 
         return True
 
-    # REFACTOR THIS IF NECESSARY
-    def _get_aoe_units(self, pos, aoe):
+    def _get_aoe_units(self, pos, aoe, filters):
         """Gets all units within an AoE centered on pos. Currently 2d only
         TODO: Modify using a proper pathfinding algorithim so it doesn't go through walls.
         This is just for ease of use
         """
-        # def get_dist(target_pos):
-        #     return sum(abs(i - j) for i, j in zip(pos, target_pos))
+        # Leave the hacky filter here for now, figure out what's the best way to do this later
+        def check_filter(cell, filters):
+            logging.debug((cell, cell.properties, filters))
+            for filt, cond in filters.items():
+                logging.debug(("Filter loop", filt, cond))
+                # Check if it's filtering for PRESENCE
+                if cond:
+                    if filt not in cell.properties:
+                        return False
+                elif filt in cell.properties:
+                    return False
+            return True
+
         if not self.zone.check_coords(*pos):
             raise IllegalActionException("Pos is out of bounds.")
 
@@ -68,6 +78,11 @@ class Manager:
             for neighbour in cell.get_neighbours():
                 if neighbour.pos in visited:
                     continue
+                # Check if the tile is a legal tile
+                if not check_filter(neighbour, filters):
+                    logging.debug("--SKIPPING--")
+                    continue
+
                 pq[neighbour] = dist + 1
         logging.debug("Units: {}".format(units))
         return units
@@ -155,7 +170,17 @@ class Manager:
         if not self._in_range(unit.pos, target_pos, active.range):
             raise IllegalActionException("Insufficient attack range")
 
-        aoe_targets = [i for i in self._get_aoe_units(target_pos, active.aoe)]
+        # Does this go through walls
+        spread = "spread" in active.properties
+        logging.debug("Spread: {}".format(spread))
+        if spread:
+            filters = {}
+        else:
+            filters = {"atk_blocked": False}
+
+        aoe_targets = [i for i in self._get_aoe_units(target_pos, active.aoe, filters=filters)]
+
+        # Does this hit allied units
         friendly_fire = "friendly_fire" in active.properties
         logging.debug("Friendly fire: {}".format(friendly_fire))
 
