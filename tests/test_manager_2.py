@@ -1,7 +1,3 @@
-"""
-TODO: REFACTOR TO PYTEST
-"""
-
 import sys
 import os
 import yaml
