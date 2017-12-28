@@ -53,7 +53,7 @@ class ActiveLoader:
         for active_id, active_dict in raw.items():
             active = Active(active_id, **active_dict)
             self.actives[active_id] = active
-            self.actives_by_name[active_name] = active
+            self.actives_by_name[active_dict["name"]] = active
 
     def check_integrity(self, raw_data):
         # Check that Active names AND ids have no duplicates
@@ -69,7 +69,7 @@ class ActiveLoader:
     def by_name(self, active_name):
         if active_name not in self.actives_by_name:
             raise MissingResourceException("Active {} not found in active data".format(active_name))
-        return self.actives_by_name[active_name
+        return self.actives_by_name[active_name]
 
 """
 Entities
