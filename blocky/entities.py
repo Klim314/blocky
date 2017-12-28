@@ -20,20 +20,11 @@ Active skills. These
 """
 
 class Active:
-    def __init__(self, id, name, active_type, targets, properties,
-                 cooldown, mp_cost, hp_cost,
-                 range, formula, aoe):
-        self.id = id
-        self.name = name
-        self.active_type = active_type
-        self.targets = targets
-        self.properties = set(properties)
-        self.cooldown = cooldown
-        self.mp_cost = mp_cost
-        self.hp_cost = hp_cost
-        self.range = range
-        self.formula = formula
-        self.aoe = aoe
+    def __init__(self, active_id, **kwargs):
+        self.id = active_id
+        for key, item in kwargs.items():
+            setattr(self, key, item)
+        self.properties = set(self.properties)
         # Add supplementary effects here in the future
 
     def __repr__(self):
