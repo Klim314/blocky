@@ -1,0 +1,61 @@
+test_skill:
+  name: test1
+  active_type: "attack_single"
+  targets: {"unit"}
+  properties: {}
+  cooldown: 0
+  mp_cost: 0
+  hp_cost: 0
+  range: 1
+  formula: "({uatk} + randint(1, 6)) - {tpdef}"
+  aoe: 0
+
+# Attacks
+
+attack_0:
+  name: basic_single
+  active_type: "attack_single"
+  targets: {"unit"}
+  properties: {}
+  cooldown: 0
+  mp_cost: 0
+  hp_cost: 0
+  range: 1
+  formula: "({uatk} + randint(1, 6)) - {tpdef}"
+  aoe: 0
+
+attack_1:
+  name: basic_aoe
+  active_type: "attack_aoe"
+  targets: {"ground"}
+  properties: {}
+  cooldown: 0
+  mp_cost: 0
+  hp_cost: 0
+  formula: "({uatk} + randint(1, 6)) - {tpdef}"
+  range: 3
+  aoe: 2
+
+attack_2:
+  name: heavy_single
+  active_type: "attack_single"
+  targets: {"unit"}
+  properties: {}
+  cooldown: 3
+  mp_cost: 3
+  hp_cost: 0
+  range: 1
+  formula: "(int(1.5 * {uatk}) + randint(3, 9)) - {tpdef}"
+  aoe: 0
+
+attack_3:
+  name: aoe_spread
+  active_type: "attack_aoe"
+  targets: {"ground"}
+  properties: {"spread"}
+  cooldown: 0
+  mp_cost: 0
+  hp_cost: 0
+  formula: "({uatk} + randint(1, 6)) - {tpdef}"
+  range: 3
+  aoe: 2

@@ -1,0 +1,24 @@
+g:
+  name: ground
+  properties:
+    passable: True
+    move_cost: 1
+  3d_sprite_path: None
+  2d_sprite_path: None
+
+a:
+  name: air
+  properties:
+    passable: False
+    move_cost: 999999
+  3d_sprite_path: None
+  2d_sprite_path: None
+
+w:
+  name: wall
+  properties:
+    passable: False
+    move_cost: 999999
+    atk_passable: False
+  3d_sprite_path: None
+  2d_sprite_path: None
