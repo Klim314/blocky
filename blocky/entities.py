@@ -155,6 +155,13 @@ class TemplateUnitFactory:
 
     # TODO. Allow creation of SPESHUL UNITS
     def create_unit(self, unit_class, unit_name, level, modifiers={}, owner=None):
+        """Unit creation from class template
+        args:
+            unit_class: str
+            unit_name: str
+            level: int
+            modifiers: 
+        """
         if unit_class not in self.unit_data:
             raise MissingResourceException("{} not found in unit_data".format(unit_class))
         datum = self.unit_data[unit_class]

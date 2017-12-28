@@ -1,0 +1,23 @@
+map: map1.map
+map_ann: map_ann.yaml
+unit_ann: units.yaml
+active_ann: actives.yaml
+entities:
+  units:
+      - name: "knight1"
+        unit_class: "knight"
+        level: 4
+        owner: "enemy_1"
+        pos: [0, 0, 0]
+
+      - name: "knight2"
+        unit_class: "knight"
+        level: 4
+        owner: "enemy_1"
+        pos: [1, 0, 0]
+entry_points: 
+  - [0, 2, 0]
+  - [1, 2, 0]
+events: []
+victory: {"all_enemies_dead"}
+defeat: {"all_dead"}

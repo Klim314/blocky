@@ -1,9 +1,12 @@
+import os
+import logging
+import yaml
+
 from random import randint
 from heapdict import heapdict
 from blocky.custom_exceptions import IllegalActionException, MissingResourceException
-from blocky.fieldmap import pathfind
-
-import logging
+from blocky.fieldmap import pathfind, Zone
+from blocky.entities import TemplateUnitFactory, ActiveLoader
 
 
 def calc_damage(unit, attack, target):
@@ -13,8 +16,44 @@ def calc_damage(unit, attack, target):
                                       tmdef=target.mdef))
 
 
+# Might want to break this down into the gamemanager, gamestatemanager and zonemanager
+
+class GameStateManager:
+    """Manages a stage instance including objectives, etc
+    """
+    def __init__(self, stage_data):
+        self.actives = ActiveLoader(os.path.join("data", stage_data["active_ann"]))
+        self.uf = TemplateUnitFactory(os.path.join("data", stage_data["unit_ann"]),
+                                      self.actives)
+        self.buffs = None
+        self.zone_manager = self._init_zone(stage_data)
+
+    def _init_zone(self, stage_data):
+        zone = Zone.from_paths(os.path.join("data", stage_data["map_ann"]),
+                               os.path.join("data/maps", stage_data["map"]))
+        zone_manager = Manager(zone)
+
+        # Create the units and place them in the zone
+        for unit_dict in stage_data["entities"]["units"]:
+            unit = self.uf.create_unit(unit_dict["unit_class"],
+                                       unit_dict["name"],
+                                       unit_dict["level"],
+                                       owner=unit_dict["owner"])
+            zone_manager.add_entity(unit, *unit_dict["pos"])
+
+        return zone_manager
+
+    @classmethod
+    def from_path(cls, stage_data_path):
+        with open(stage_data_path) as f:
+            temp = yaml.load(f)
+        return cls(temp)
+
+
+
+
 class Manager:
-    """Manages a game state containing at least one zone
+    """Manages a zone
     """
     def __init__(self, zone):
         """Initializes the gamestate

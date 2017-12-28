@@ -73,6 +73,16 @@ class Zone:
         logging.debug((cell_anns, cell_data))
         return self.load_cells(cell_anns, cell_data)
 
+    @classmethod
+    def from_paths(cls, map_ann_path, map_path):
+        zone = cls()
+
+        with open(map_ann_path) as f:
+            map_ann = yaml.load(f)
+
+        zone.load_map(map_ann, map_path)
+        return zone
+
     def check_coords(self, x, y, z):
         """
         Determines if a seet of coordinates are contained within the zone
