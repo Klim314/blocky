@@ -10,6 +10,18 @@ test_skill:
   formula: "({uatk} + randint(1, 6)) - {tpdef}"
   aoe: 0
 
+test_debuff:
+  name: test2
+  active_type: "attack_single"
+  targets: {"unit"}
+  properties: {}
+  cooldown: 0
+  mp_cost: 0
+  hp_cost: 0
+  range: 1
+  formula: "({uatk} + randint(1, 6)) - {tpdef}"
+  aoe: 0
+
 # Attacks
 
 attack_0:

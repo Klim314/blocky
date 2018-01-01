@@ -5,19 +5,32 @@ active_ann: actives.yaml
 entities:
   units:
       - name: "knight1"
+        id: "knight_1"
         unit_class: "knight"
         level: 4
         owner: "enemy_1"
         pos: [0, 0, 0]
 
       - name: "knight2"
+        id: "knight_2"
         unit_class: "knight"
         level: 4
         owner: "enemy_1"
         pos: [1, 0, 0]
+
+      - name: "knight3"
+        id: "knight_3"
+        unit_class: "knight"
+        level: 4
+        owner: "enemy_1"
+        pos: None
+        active: False
 entry_points: 
   - [0, 2, 0]
   - [1, 2, 0]
-events: []
+events:
+  # - [entity_killed, [knight_1], [print_text, "Urrgh..."]]
+
+  - [time_elapsed, {time_elapsed: 3}, [[spawn_unit, {unit_id: knight_3, pos: [2, 0, 0]}]]]
 victory: {"all_enemies_dead"}
 defeat: {"all_dead"}

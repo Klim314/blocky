@@ -20,4 +20,33 @@ knight:
   properties:
     attackable: True
     unit_type: [guardian, bruiser] # This is for AI
+  graphics:
+    2dsprite: null
+    3dsprite: null
 
+wall:
+  base:
+    hp: 3
+    mp: 0
+    move: 0
+    atk: 0
+    pdef: 0
+    mdef: 0
+    actives: []
+  growths:
+    hp: 0
+    mp: 0
+    move: 0
+    atk: 0
+    pdef: 0
+    mdef: 0
+    actives: []
+  properties:
+    attackable: True
+    super_armor: True
+    unit_type: [inanimate] # This is for AI
+  terrain_properties:
+    passable: False
+  graphics:
+    2dsprite: null
+    3dsprite: null

@@ -68,8 +68,9 @@ Entities
 
 
 class Entity:
-    def __init__(self):
+    def __init__(self, manager=None):
         self.pos = (None, None, None)
+        self.manager = manager
 
     @property
     def x(self):
@@ -83,6 +84,15 @@ class Entity:
     def z(self):
         return self.pos[2]
 
+    def refresh(self):
+        pass
+
+    def emit(self, signal, params):
+        # Emits a signal to the manager
+        if not self.manager:
+            raise
+        self.manager.recieve(signal, params)
+
 
 class Unit(Entity):
     """Class for a general use field-unit
@@ -94,10 +104,12 @@ class Unit(Entity):
                  name, actives, passives, properties,
                  unit_class,
                  sprite, portrait,
-                 manager):
-        super().__init__()
+                 manager,
+                 id=None):
+        super().__init__(manager)
         # System stats
         self.unit_class = unit_class # Class of the 
+        self.id = id
 
         # Core stats
         self.level = level
@@ -108,6 +120,8 @@ class Unit(Entity):
         self.atk = atk
         self.pdef = pdef
         self.mdef = mdef
+
+
 
         # Supplementary stats
         self.name = name
@@ -120,9 +134,6 @@ class Unit(Entity):
         # Graphics
         self.sprite = sprite
         self.portrait = portrait
-
-        # manager
-        self.manager = manager
 
     def __repr__(self):
         return "<Unit: {}>".format(self.name)
@@ -154,7 +165,7 @@ class TemplateUnitFactory:
         # Do some preimage loading and stuff for used templates
 
     # TODO. Allow creation of SPESHUL UNITS
-    def create_unit(self, unit_class, unit_name, level, modifiers={}, owner=None):
+    def create_unit(self, unit_class, unit_name, level, modifiers={}, owner=None, id=None):
         """Unit creation from class template
         args:
             unit_class: str
@@ -191,6 +202,6 @@ class TemplateUnitFactory:
                     None,  # Sprite
                     None,  # Portrait
                     None,  # Manager
-                    )
+                    id=id)
         unit.owner = owner
         return unit
